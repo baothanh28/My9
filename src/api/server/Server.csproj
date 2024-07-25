@@ -20,7 +20,6 @@
     <ProjectReference Include="..\framework\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\migrations\MSSQL\MSSQL.csproj" />
     <ProjectReference Include="..\migrations\PostgreSQL\PostgreSQL.csproj" />
-    <ProjectReference Include="..\modules\Catalog\Catalog.Infrastructure\Catalog.Infrastructure.csproj" />
     <ProjectReference Include="..\modules\Demo\DemoController\DemoController.csproj" />
     <ProjectReference Include="..\modules\Demo\Demo\Demo.csproj" />
     <ProjectReference Include="..\modules\Todo\Todo.csproj" />

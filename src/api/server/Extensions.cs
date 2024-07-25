@@ -18,7 +18,6 @@ public static class Extensions
         //define module assemblies
         var assemblies = new Assembly[]
         {
-            //typeof(CatalogMetadata).Assembly,
             //typeof(TodoModule).Assembly,
             typeof(DemoModule).Assembly
         };
@@ -33,7 +32,6 @@ public static class Extensions
         });
 
         //register module services
-        //builder.RegisterCatalogServices();
         //builder.RegisterTodoServices();
         builder.RegisterDemoServices();
         builder.RegisterDemoControllerServices();
@@ -41,7 +39,6 @@ public static class Extensions
         //add carter endpoint modules
         builder.Services.AddCarter(configurator: config =>
         {
-            //config.WithModule<CatalogModule.Endpoints>();
             //config.WithModule<TodoModule.Endpoints>();
             config.WithModule<DemoModule.Endpoints>();
         });
@@ -54,7 +51,6 @@ public static class Extensions
         ArgumentNullException.ThrowIfNull(app);
 
         //register modules
-        //app.UseCatalogModule();
         //app.UseTodoModule();
         app.UseDemoModule();
         app.UseDemoControllerModule();
