@@ -52,10 +52,9 @@ public class FshDbContext(IMultiTenantContextAccessor<FshTenantInfo> multiTenant
         }
     }
 }
-
 public class FshSingleDbContext(DbContextOptions options,
     IPublisher publisher,
-    IOptions<DatabaseOptions> settings):MultiTenantDbContext(tenantInfo:null, options)
+    IOptions<DatabaseOptions> settings) : DbContext(options)
 {
     private readonly IPublisher _publisher = publisher;
     private readonly DatabaseOptions _settings = settings.Value;
@@ -65,12 +64,10 @@ public class FshSingleDbContext(DbContextOptions options,
     {
         optionsBuilder.EnableSensitiveDataLogging();
         optionsBuilder.ConfigureDatabase(_settings.Provider, _settings.ConnectionString!);
-       
     }
-   
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        this.TenantNotSetMode = TenantNotSetMode.Overwrite;
         int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         await PublishDomainEventsAsync().ConfigureAwait(false);
         return result;
@@ -98,6 +95,50 @@ public class FshSingleDbContext(DbContextOptions options,
 
 //public class FshSingleDbContext(DbContextOptions options,
 //    IPublisher publisher,
+//    IOptions<DatabaseOptions> settings):MultiTenantDbContext(tenantInfo:null, options)
+//{
+//    private readonly IPublisher _publisher = publisher;
+//    private readonly DatabaseOptions _settings = settings.Value;
+
+
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//    {
+//        optionsBuilder.EnableSensitiveDataLogging();
+//        optionsBuilder.ConfigureDatabase(_settings.Provider, _settings.ConnectionString!);
+
+//    }
+
+//    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+//    {
+//        this.TenantNotSetMode = TenantNotSetMode.Overwrite;
+//        int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+//        await PublishDomainEventsAsync().ConfigureAwait(false);
+//        return result;
+//    }
+//    private async Task PublishDomainEventsAsync()
+//    {
+//        var domainEvents = ChangeTracker.Entries<IEntity>()
+//            .Select(e => e.Entity)
+//            .Where(e => e.DomainEvents.Count > 0)
+//            .SelectMany(e =>
+//            {
+//                var domainEvents = e.DomainEvents.ToList();
+//                e.DomainEvents.Clear();
+//                return domainEvents;
+//            })
+//            .ToList();
+
+//        foreach (var domainEvent in domainEvents)
+//        {
+//            await _publisher.Publish(domainEvent).ConfigureAwait(false);
+//        }
+//    }
+//}
+
+
+
+//public class FshSingleDbContext(DbContextOptions options,
+//    IPublisher publisher,
 //    IOptions<DatabaseOptions> settings):DbContext
 //{
 //    private readonly IPublisher _publisher = publisher;
@@ -108,9 +149,9 @@ public class FshSingleDbContext(DbContextOptions options,
 //    {
 //        optionsBuilder.EnableSensitiveDataLogging();
 //        optionsBuilder.ConfigureDatabase(_settings.Provider, _settings.ConnectionString!);
-       
+
 //    }
-   
+
 //    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 //    {
 //        int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
